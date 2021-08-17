@@ -16,10 +16,16 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 
 // Define your routes here
-app.get('/', (req, res) => {
-    res.render('index');
-});
 
+app.use('/', require("./routes/indexRouter"));
+app.use('/products', require("./routes/productRouter"));
+
+app.get('/sync', (req, res) => {
+    let models = require('./models');
+    models.sequelize.sync().then(() => {
+        res.send("aromadb is synced successfully.");
+    });
+});
 
 app.get('/:page', (req, res) => {
     let banners = {
@@ -37,7 +43,7 @@ app.get('/:page', (req, res) => {
     }
     let page = req.params.page;
 
-    res.render(page, {banner: banners[page]});
+    res.render(page, { banner: banners[page] });
 });
 
 
