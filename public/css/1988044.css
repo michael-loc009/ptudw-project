@@ -1,0 +1,4 @@
+.review_item .media .media-body i.disabled,.product_description_area .tab-content .total_rate .rating_list .list li a i.disabled{
+    color: lightgray;
+}
+
