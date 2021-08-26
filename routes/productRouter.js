@@ -7,11 +7,31 @@ router.get('/', async(req, res, next) => {
     let brandController = require('../controllers/brandController');
     let colorController = require('../controllers/colorController');
 
+    if (req.query.category == null || isNaN(req.query.category)){
+        req.query.category = 0;
+    }
+
+    if (req.query.brand == null || isNaN(req.query.brand)){
+        req.query.brand = 0;
+    }
+
+    if (req.query.color == null || isNaN(req.query.color)){
+        req.query.color = 0;
+    }
+
+    if (req.query.min == null || isNaN(req.query.min)){
+        req.query.min = 0;
+    }
+
+    if (req.query.max == null || isNaN(req.query.max)){
+        req.query.max = 100;
+    }
+
     try {
         const categories = await categoryController.getAll();
-        const brands = await brandController.getAll();
-        const colors = await colorController.getAll();
-        const products = await productController.getAll();
+        const brands = await brandController.getAll(req.query);
+        const colors = await colorController.getAll(req.query);
+        const products = await productController.getAll(req.query);
         const trendingProducts = await productController.getTrendingProducts(12);
        
 

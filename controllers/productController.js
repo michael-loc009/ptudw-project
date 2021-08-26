@@ -1,6 +1,9 @@
 let controller = {};
 let models = require('../models');
+const { options } = require('../routes/productRouter');
 let Product = models.Product;
+let Sequelize = require('sequelize');
+let Op = Sequelize.Op;
 
 controller.getTrendingProducts = (limit) => {
     return new Promise((resolve, reject) => {
@@ -25,12 +28,36 @@ controller.getTrendingProducts = (limit) => {
 };
 
 
-controller.getAll = () => {
+controller.getAll = (query) => {
     return new Promise((resolve, reject) => {
-        Product.findAll({
-                include: [{ model: models.Category }],
-                attributes: ['id', 'name', 'imagepath', 'price']
-            })
+        let options = {
+            include: [{ model: models.Category }],
+            attributes: ['id', 'name', 'imagepath', 'price'],
+            where: {
+                price: {
+                    [Op.gte]: query.min,
+                    [Op.lte]: query.max
+                }
+            }
+        };
+
+        if (query.category > 0) {
+            options.where.categoryId = query.category;
+        }
+
+        if (query.brand > 0) {
+            options.where.brandId = query.brand;
+        }
+
+        if (query.color > 0) {
+            options.include.push({
+                model: models.ProductColor,
+                attributes: [],
+                where: { colorId: query.color }
+            });
+        }
+
+        Product.findAll(options)
             .then(data => {
                 const trendingProducts = data.map((item) => {
                     let values = item.dataValues;
