@@ -24,6 +24,13 @@ controller.getAll = (query) => {
             options.include[0].where.categoryId = query.category;
         }
 
+        
+        if (query.search != '') {
+            options.include[0].where.name = {
+                [Op.iLike]: `%${query.search}%`
+            };
+        }
+
         if (query.color > 0) {
             options.include[0].include = [{
                 model: models.ProductColor,

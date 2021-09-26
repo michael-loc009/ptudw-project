@@ -30,7 +30,7 @@
       {{#each categories}}
         <div class="hero-carousel__slide">
           <img src="{{imagepath}}" alt="" class="img-fluid" />
-          <a href="#" class="hero-carousel__slideOverlay">
+          <a href="/products?category={{id}}" class="hero-carousel__slideOverlay">
             <h3>{{name}}</h3>
             <p>{{summary}}</p>
           </a>
@@ -50,23 +50,7 @@
       <div class="row">
         {{#each trendingProducts}}
           <div class="col-md-6 col-lg-4 col-xl-3">
-            <div class="card text-center card-product">
-              <div class="card-product__img">
-                <img class="card-img" src="{{imagepath}}" alt="" />
-                <ul class="card-product__imgOverlay">
-                  <li><button><i class="ti-search"></i></button></li>
-                  <li><button><i class="ti-shopping-cart"></i></button></li>
-                  <li><button><i class="ti-heart"></i></button></li>
-                </ul>
-              </div>
-              <div class="card-body">
-                <p>{{category.name}}</p>
-                <h4 class="card-product__title"><a
-                    href="/products/{{id}}"
-                  >{{name}}</a></h4>
-                <p class="card-product__price">${{price}}</p>
-              </div>
-            </div>
+              {{> product}}
           </div>
         {{/each}}
       </div>
@@ -89,7 +73,7 @@
             <h3>Up To 50% Off</h3>
             <h4>Winter Sale</h4>
             <p>Him she'd let them sixth saw light</p>
-            <a class="button button--active mt-3 mt-xl-4" href="#">Shop Now</a>
+            <a class="button button--active mt-3 mt-xl-4" href="/products">Shop Now</a>
           </div>
         </div>
       </div>

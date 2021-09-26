@@ -32,7 +32,7 @@ controller.getAll = (query) => {
     return new Promise((resolve, reject) => {
         let options = {
             include: [{ model: models.Category }],
-            attributes: ['id', 'name', 'imagepath', 'price'],
+            attributes: ['id', 'name', 'imagepath', 'price', 'categoryId'],
             where: {
                 price: {
                     [Op.gte]: query.min,
@@ -43,6 +43,12 @@ controller.getAll = (query) => {
 
         if (query.category > 0) {
             options.where.categoryId = query.category;
+        }
+
+        if (query.search != '') {
+            options.where.name = {
+                [Op.iLike]: `%${query.search}%`
+            };
         }
 
         if (query.brand > 0) {
@@ -57,14 +63,42 @@ controller.getAll = (query) => {
             });
         }
 
-        Product.findAll(options)
+        if (query.limit > 0) {
+            options.limit = query.limit;
+            options.offset = query.limit * (query.page - 1);
+        }
+
+        if (query.sort) {
+            switch (query.sort) {
+                case 'price':
+                    options.order = [
+                        ['price', 'ASC']
+                    ];
+                    break;
+                case 'overallReview':
+                    options.order = [
+                        ['overallReview', 'DESC']
+                    ];
+                    break;
+                default:
+                    options.order = [
+                        ['name', 'ASC']
+                    ];
+                    break;
+            }
+        }
+
+        Product.findAndCountAll(options)
             .then(data => {
-                const trendingProducts = data.map((item) => {
+                console.log(data)
+                let products = data.rows.map((item) => {
                     let values = item.dataValues;
                     let category = item.Category.dataValues;
                     return { id: values.id, name: values.name, imagepath: values.imagepath, price: values.price, category: category }
                 });
-                resolve(trendingProducts);
+
+                products.count = data.count;
+                resolve(products);
             })
             .catch(error => reject(new Error(error)));
     });

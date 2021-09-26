@@ -68,26 +68,28 @@
         <!-- Start Filter Bar -->
         <div class="filter-bar d-flex flex-wrap align-items-center">
           <div class="sorting">
-            <select>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
+            <select id="sortControl" onchange="selectParam('sort', this.value)">
+              <option value="name">Default sorting by name</option>
+              <option value="price">Sorting by price from low to high</option>
+              <option value="overallReview">Sorting by reviews from high to low</option>
             </select>
           </div>
           <div class="sorting mr-auto">
-            <select>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
+            <select id="limitControl" onchange="selectParam('limit', this.value, true)">
+              <option value="9">Show 9</option>
+              <option value="18">Show 18</option>
+              <option value="36">Show 36</option>
             </select>
           </div>
           <div>
-            <div class="input-group filter-bar-search">
-              <input type="text" placeholder="Search">
-              <div class="input-group-append">
-                <button type="button"><i class="ti-search"></i></button>
-              </div>
-            </div>
+             <form action="/products" method="GET">
+                <div class="input-group filter-bar-search">
+                  <input  type="search" id="searchKeyword" name="search" placeholder="Search">
+                  <div class="input-group-append">
+                    <button type="submit"><i class="ti-search"></i></button>
+                  </div>
+                </div>
+            </form>
           </div>
         </div>
         <!-- End Filter Bar -->
@@ -96,23 +98,14 @@
           <div class="row">
             {{#each products}}
             <div class="col-md-6 col-lg-4">
-              <div class="card text-center card-product">
-                <div class="card-product__img">
-                  <img class="card-img" src="{{imagepath}}" alt="">
-                  <ul class="card-product__imgOverlay">
-                    <li><button><i class="ti-search"></i></button></li>
-                    <li><button><i class="ti-shopping-cart"></i></button></li>
-                    <li><button><i class="ti-heart"></i></button></li>
-                  </ul>
-                </div>
-                <div class="card-body">
-                  <p>{{category.name}}</p>
-                  <h4 class="card-product__title"><a href="/products/{{id}}">{{name}}</a></h4>
-                  <p class="card-product__price">${{price}}</p>
-                </div>
-              </div>
+                {{> product}}
             </div>
             {{/each}}
+          </div>
+          <div class="row justify-content-center">
+              <nav id="pagination" aria-label="Page navigation example">
+            {{{createPagination pagination paginationClass="pagination"}}}
+              </nav>
           </div>
         </section>
         <!-- End Best Seller -->
@@ -170,7 +163,11 @@
     brand: 0,
     color: 0,
     min: 0,
-    max: 100
+    max: 100,
+    sort: 'name',
+    limit: 9,
+    search: '',
+    page: 1
   };
 
   for (let key in params) {
@@ -178,13 +175,34 @@
       urlParams.append(key, params[key]);
     }
   }
+  
+  
 
-  for (let key in params) {
-    let control = $(`#${key}${urlParams.get(key)}`);
-    if (control) {
-      $(control).prop('checked', true);
-    }
-  }
+  $(document).ready(()=>{
+      let checkboxes = ['category', 'color', 'brand'];
+      for (let key of checkboxes) {
+        let control = $(`#${key}${urlParams.get(key)}`);
+        if (control) {
+          $(control).prop('checked', true);
+        }    
+      }
+
+      $(`#sortControl`).val(urlParams.get('sort'));
+      $(`#limitControl`).val(urlParams.get('limit'));
+      $('#searchKeyword').val(urlParams.get('search'));
+
+      let savePage = urlParams.get('page');
+      $('#pagination li').addClass('page-item');
+      $('#pagination li a').addClass('page-link');
+      $('#pagination li a').each((index, item)=>{
+        let page = $(item).attr('href').split('=')[1];
+        urlParams.set('page', page);
+        let href = `/products?${urlParams.toString()}`;
+        $(item).attr('href', href);
+      });
+
+       urlParams.set('page',savePage);
+  });
 
   function selectParam(key, value = 0, reset = false) {
     if (reset) {
