@@ -2,3 +2,7 @@
     color: lightgray;
 }
 
+.btn-add-to-cart:hover{
+    color: black !important;
+    cursor: pointer !important;
+}

@@ -27,14 +27,15 @@
 							<li><a href="#"><span>Availibility</span> :{{#if availability}} In Stock{{else}}Out of Stock{{/if}}</a></li>
 						</ul>
 						<p>{{summary}}</p>
-						<div class="product_count">
+						<div style="display: flex;
+    align-items: baseline;" class="product_count">
               <label for="qty">Quantity:</label>
-              <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							 class="increase items-count" type="button"><i class="ti-angle-left"></i></button>
+              <button style="width: 40%;" onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+							 class="increase items-count" type="button"><i class="ti-angle-up"></i></button>
 							<input type="text" name="qty" id="sst" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty" readonly>
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-               class="reduced items-count" type="button"><i class="ti-angle-right"></i></button>
-							<a class="button primary-btn add-to-cart text-white" data-id="{{id}}" >Add to Cart</a>               
+							<button  style="width: 40%;" onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+               class="reduced items-count" type="button"><i class="ti-angle-down"></i></button>
+							<a class="btn-add-to-cart button btn-primary add-to-cart text-white" data-id="{{id}}" >Add to Cart</a>               
 						</div>
 						<div class="card_area d-flex align-items-center">
 							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
