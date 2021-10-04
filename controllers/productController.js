@@ -113,6 +113,7 @@ controller.getById = (id) => {
                 include: [{ model: models.Category }]
             });
             product = productData.dataValues;
+            product.overallReview = product.overallReview.toLocaleString();
             product.category = productData.Category.dataValues;
 
             let productSpecifications = await models.ProductSpecification.findAll({ where: { productId: id }, include: [{ model: models.Specification }] });
@@ -145,7 +146,6 @@ controller.getById = (id) => {
             product.reviews = reviews.map(item => {
                 return {...item.dataValues, user: item.User.dataValues }
             });
-
             let stars = [];
             for (let i = 1; i <= 5; i++) {
                 stars.push(product.reviews.filter(item => (item.rating == i)).length);

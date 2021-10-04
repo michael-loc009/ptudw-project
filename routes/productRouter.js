@@ -71,12 +71,16 @@ router.get('/', async(req, res, next) => {
 
 router.get('/:id', async(req, res, next) => {
     let productController = require('../controllers/productController');
-
+    let reviewController = require('../controllers/reviewController');
     try {
         const product = await productController.getById(req.params.id);
         const trendingProducts = await productController.getTrendingProducts(12);
+        const review = await reviewController.getUserReviewProduct(1,req.params.id);
+
         res.locals.product = product;
         res.locals.topProducts = trendingProducts;
+        res.locals.userReview = review;
+        
         res.render('single_product');
     } catch (error) {
         next(error);
