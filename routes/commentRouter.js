@@ -1,12 +1,12 @@
 let express = require('express');
 let router = express.Router();
+let userController = require('../controllers/userController');
+let commentController = require('../controllers/commentController');
 
-router.post('/', async(req, res, next) => {
-    let controller = require('../controllers/commentController');
-
+router.post('/', userController.isLoggedIn, async(req, res, next) => {
     try {
         let comment = {
-            userId: 1,
+            userId: req.session.user.id,
             productId: req.body.productId,
             message: req.body.message
         };
@@ -15,7 +15,7 @@ router.post('/', async(req, res, next) => {
             comment.parentCommentId = req.body.parentCommentId;
         }
 
-        const addComment = await controller.add(comment);
+        const addComment = await commentController.add(comment);
 
         res.redirect(`/products/${addComment.productId}`);
 

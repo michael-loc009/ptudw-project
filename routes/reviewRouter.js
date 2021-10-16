@@ -1,19 +1,19 @@
 let express = require('express');
-const controller = require('../controllers/categoryController');
 let router = express.Router();
-
-router.post('/', async(req, res, next) => {
-    let controller = require('../controllers/reviewController');
+let userController = require('../controllers/userController');
+let reviewController = require('../controllers/reviewController');
+router.post('/', userController.isLoggedIn, async(req, res, next) => {
+    
 
     try {
         let review = {
-            userId: 1,
+            userId: req.session.user.id,
             productId: req.body.productId,
             rating: req.body.rating,
             message: req.body.message
         };
 
-        const addReview = await controller.add(review);
+        const addReview = await reviewController.add(review);
 
         res.redirect(`/products/${review.productId}`);
 

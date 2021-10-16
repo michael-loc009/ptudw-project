@@ -56,6 +56,7 @@ router.get('/', async(req, res, next) => {
         res.locals.brands = brands;
         res.locals.colors = colors;
         res.locals.products = products;
+        res.locals.productsLength = products ? products.length > 0 : false;
         res.locals.topProducts = trendingProducts;
         res.locals.pagination = {
             page: parseInt(req.query.page),
@@ -75,7 +76,8 @@ router.get('/:id', async(req, res, next) => {
     try {
         const product = await productController.getById(req.params.id);
         const trendingProducts = await productController.getTrendingProducts(12);
-        const review = await reviewController.getUserReviewProduct(1,req.params.id);
+        const userID = req.session.user? req.session.user.id: -1;
+        const review = await reviewController.getUserReviewProduct(userID,req.params.id);
 
         res.locals.product = product;
         res.locals.topProducts = trendingProducts;

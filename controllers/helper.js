@@ -32,7 +32,8 @@ helper.createStars = (star) => {
 helper.createTopProductList = (topProducts) => {
     let str = '';
     let count = 0;
-    for (let i = 0; i < topProducts.length; i++) {
+    const length = topProducts? topProducts.length: 0;
+    for (let i = 0; i < length; i++) {
         count++;
         if (i % 3 === 0) {
             str += `<div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">

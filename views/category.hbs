@@ -82,13 +82,13 @@
             </select>
           </div>
           <div>
-             <form action="/products" method="GET">
-                <div class="input-group filter-bar-search">
-                  <input  type="search" id="searchKeyword" name="search" placeholder="Search">
-                  <div class="input-group-append">
-                    <button type="submit"><i class="ti-search"></i></button>
-                  </div>
+            <form action="/products" method="GET">
+              <div class="input-group filter-bar-search">
+                <input type="search" id="searchKeyword" name="search" placeholder="Search">
+                <div class="input-group-append">
+                  <button type="submit"><i class="ti-search"></i></button>
                 </div>
+              </div>
             </form>
           </div>
         </div>
@@ -96,16 +96,21 @@
         <!-- Start Best Seller -->
         <section class="lattest-product-area pb-40 category-list">
           <div class="row">
+            {{#if productsLength}}
             {{#each products}}
             <div class="col-md-6 col-lg-4">
-                {{> product}}
+              {{> product}}
             </div>
             {{/each}}
+            {{else}}
+            <span>No matching results</span>
+            {{/if}}
+
           </div>
           <div class="row justify-content-center">
-              <nav id="pagination" aria-label="Page navigation example">
-            {{{createPagination pagination paginationClass="pagination"}}}
-              </nav>
+            <nav id="pagination" aria-label="Page navigation example">
+              {{{createPagination pagination paginationClass="pagination"}}}
+            </nav>
           </div>
         </section>
         <!-- End Best Seller -->
@@ -175,33 +180,33 @@
       urlParams.append(key, params[key]);
     }
   }
-  
-  
 
-  $(document).ready(()=>{
-      let checkboxes = ['category', 'color', 'brand'];
-      for (let key of checkboxes) {
-        let control = $(`#${key}${urlParams.get(key)}`);
-        if (control) {
-          $(control).prop('checked', true);
-        }    
+
+
+  $(document).ready(() => {
+    let checkboxes = ['category', 'color', 'brand'];
+    for (let key of checkboxes) {
+      let control = $(`#${key}${urlParams.get(key)}`);
+      if (control) {
+        $(control).prop('checked', true);
       }
+    }
 
-      $(`#sortControl`).val(urlParams.get('sort'));
-      $(`#limitControl`).val(urlParams.get('limit'));
-      $('#searchKeyword').val(urlParams.get('search'));
+    $(`#sortControl`).val(urlParams.get('sort'));
+    $(`#limitControl`).val(urlParams.get('limit'));
+    $('#searchKeyword').val(urlParams.get('search'));
 
-      let savePage = urlParams.get('page');
-      $('#pagination li').addClass('page-item');
-      $('#pagination li a').addClass('page-link');
-      $('#pagination li a').each((index, item)=>{
-        let page = $(item).attr('href').split('=')[1];
-        urlParams.set('page', page);
-        let href = `/products?${urlParams.toString()}`;
-        $(item).attr('href', href);
-      });
+    let savePage = urlParams.get('page');
+    $('#pagination li').addClass('page-item');
+    $('#pagination li a').addClass('page-link');
+    $('#pagination li a').each((index, item) => {
+      let page = $(item).attr('href').split('=')[1];
+      urlParams.set('page', page);
+      let href = `/products?${urlParams.toString()}`;
+      $(item).attr('href', href);
+    });
 
-       urlParams.set('page',savePage);
+    urlParams.set('page', savePage);
   });
 
   function selectParam(key, value = 0, reset = false) {

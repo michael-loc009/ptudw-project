@@ -26,7 +26,7 @@ app.set('view engine', 'hbs');
 // Use Body parser
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Use Cookie-parser
 let cookieParser = require('cookie-parser');
@@ -35,7 +35,7 @@ app.use(cookieParser());
 // Use Session
 let session = require('express-session');
 app.use(session({
-    cookie: { httpOnly: true, maxAge: 30*24*60*60*1000},
+    cookie: { httpOnly: true, maxAge: null },
     secret: 'S3cret',
     resave: false,
     saveUninitialized: false
@@ -43,12 +43,15 @@ app.use(session({
 
 // Use Cart Controller
 let Cart = require('./controllers/cartController');
-app.use((req, res, next)=>{
-    let cart = new Cart(req.session.cart? req.session.cart: {});
-    req.session.cart =cart;
+app.use((req, res, next) => {
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+    req.session.cart = cart;
     res.locals.totalQuantity = cart.totalQuantity;
+
+    res.locals.fullname = req.session.user ? req.session.user.fullname : '';
+    res.locals.isLoggedIn = req.session.user ? true : false;
     next();
-})
+});
 
 // Define your routes here
 
@@ -57,6 +60,8 @@ app.use('/products', require("./routes/productRouter"));
 app.use('/cart', require('./routes/cartRouter'));
 app.use('/comments', require('./routes/commentRouter'));
 app.use('/reviews', require('./routes/reviewRouter'));
+app.use('/users', require('./routes/userRouter'));
+
 
 app.get('/sync', (req, res) => {
     let models = require('./models');
@@ -80,12 +85,15 @@ app.get('/:page', (req, res) => {
         tracking_order: 'Order Tracking'
     }
     let page = req.params.page;
+    let banner = banners[page];
+    if (banner) {
+        res.render(page, { banner: banner });
+    } else {
+        res.status(404)
+        res.render('error', { error: 'Not Found' });
+    }
 
-    res.render(page, { banner: banners[page] });
 });
-
-
-
 
 // Set server port and start server
 app.set('port', process.env.PORT || 5000);
