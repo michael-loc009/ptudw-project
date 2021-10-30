@@ -42,8 +42,10 @@
                 <li class="nav-item"><a class="nav-link" href="/checkout">Product Checkout</a></li>
                 <li class="nav-item"><a class="nav-link" href="/confirmation">Confirmation</a></li>
                 <li class="nav-item"><a class="nav-link" href="/cart">Shopping Cart</a></li>
-                <li class="nav-item"><a class="nav-link" href="users/login">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="users/register">Register</a></li>
+                {{#unless isLoggedIn}}
+                <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/users/register">Register</a></li>
+                {{/unless}}
                 {{!-- <li class="nav-item"><a class="nav-link" href="/tracking_order">Tracking</a></li> --}}
               </ul>
             </li>
